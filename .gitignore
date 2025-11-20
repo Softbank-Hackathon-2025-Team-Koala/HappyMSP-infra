@@ -1,0 +1,65 @@
+# -----------------------------
+# Terraform local state files
+# -----------------------------
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
+
+# -----------------------------
+# Terraform variables
+# -----------------------------
+*.tfvars
+*.tfvars.json
+
+# If you keep example variable files:
+# !example.tfvars
+
+# -----------------------------
+# Terraform CLI files & logs
+# -----------------------------
+.terraform/
+.terraform.lock.hcl
+terraform.rc
+terraform-debug.log
+crash.log
+crash.*.log
+
+# -----------------------------
+# Terraform plugin binaries
+# -----------------------------
+.terraform/providers/
+
+# -----------------------------
+# Local environment files
+# -----------------------------
+.env
+.env.*
+*.auto.tfvars      # sometimes contains secrets
+*.auto.tfvars.json
+
+# -----------------------------
+# Sensitive files from modules
+# -----------------------------
+modules/*/*.tfstate
+modules/*/terraform.tfstate.backup
+
+# -----------------------------
+# OS / Editor / Tooling
+# -----------------------------
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# IntelliJ
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
