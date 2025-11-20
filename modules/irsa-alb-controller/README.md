@@ -36,7 +36,6 @@ EKS Cluster
                 └─ Helm Chart로 배포된 ALB Controller Pod가 해당 IAM Role 사용
 ```
 
----
 
 ## Prerequisites
 
