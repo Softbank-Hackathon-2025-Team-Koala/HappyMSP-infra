@@ -5,7 +5,6 @@ AWS EKS 기반 마이크로서비스 배포 인프라 구축을 위한 Terraform
 이 레포지토리는 다음을 목표로 합니다.
 
 - 공통 네트워크(VPC) 인프라 자동 생성
-- 전용 ECR 레지스트리 생성
 - EKS 클러스터 및 NodeGroup 생성
 - 클러스터에 AWS Load Balancer Controller 설치
 
@@ -20,7 +19,6 @@ AWS EKS 기반 마이크로서비스 배포 인프라 구축을 위한 Terraform
 ├── provider-full.tf             # EKS 이후 Kubernetes/Helm 설치까지 포함
 └── modules
     ├── vpc/
-    ├── ecr/
     ├── eks/
     └── irsa-alb-controller/
 ```
@@ -42,19 +40,7 @@ private_subnets
 public_subnets
 ```
 
-## 2️⃣ ECR Module
-
-- 프로젝트 전용 ECR Repository 생성
-- 서비스별 Docker 이미지를 push하는 저장소로 사용
-
-Outputs:
-
-```
-repository_url
-```
-
-
-## 3️⃣ EKS Module
+## 2️⃣ EKS Module
 
 - 프라이빗 서브넷을 기반으로 하는 EKS 클러스터 생성
 - IAM Role(EKS Control Plane / NodeGroup) 포함
@@ -68,7 +54,7 @@ cluster_endpoint
 ```
 
 
-## 4️⃣ IRSA 기반 AWS Load Balancer Controller
+## 3️⃣ IRSA 기반 AWS Load Balancer Controller
 
 - ALB Ingress Controller를 EKS에 배포하는 모듈
 - IRSA(OIDC) 기반 IAM 연결 사용
@@ -126,7 +112,7 @@ AWS Load Balancer Controller는 다음이 만족될 때만 활성화해야 한�
 
 ```
 1. terraform init
-2. terraform apply -target=module.vpc -target=module.eks -target=module.ecr   (provider-eks)
+2. terraform apply -target=module.vpc -target=module.eks  (provider-eks)
 3. aws eks update-kubeconfig
 4. terraform apply   (provider-full + ALB Controller 주석 해제)
 ```
