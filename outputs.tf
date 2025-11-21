@@ -16,12 +16,6 @@ output "eks_cluster_name" {
   value = module.eks.cluster_name
 }
 
-
-########################################
-# ECR Repository URL 출력
-# - Docker 이미지 push 시 사용되는 레지스트리 주소.
-# 예: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<repo>
-########################################
-output "ecr_url" {
-  value = module.ecr.repository_url
+output "cluster_endpoint" {
+  value = module.eks.cluster_endpoint
 }

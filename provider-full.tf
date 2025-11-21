@@ -1,3 +1,22 @@
+terraform {
+  required_version = ">= 1.5.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.22"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.11"
+    }
+  }
+}
+
 ########################################
 # AWS Provider 설정
 # - Terraform이 AWS 리소스를 생성/조회할 때 사용할 리전(region)을 지정.
@@ -13,7 +32,7 @@ provider "aws" {
 # - 클러스터 엔드포인트(URL), CA 인증서, 상태 등을 얻을 수 있음.
 ########################################
 data "aws_eks_cluster" "this" {
-  name = module.eks.cluster_name # EKS 모듈이 생성한 클러스터 이름
+  name = module.eks.cluster_name
 }
 
 
@@ -44,7 +63,7 @@ provider "kubernetes" {
 # - AWS Load Balancer Controller 설치 시 사용.
 ########################################
 provider "helm" {
-  kubernetes = {
+  kubernetes {
     host                   = data.aws_eks_cluster.this.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.this.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.this.token

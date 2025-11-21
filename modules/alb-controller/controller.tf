@@ -17,26 +17,29 @@ resource "helm_release" "aws_load_balancer_controller" {
   ]
 
   # Helm chart 설정값 지정
-  set = [
-    {
-      name  = "clusterName"
-      value = var.cluster_name
-    },
-    {
-      name  = "region"
-      value = var.region
-    },
-    {
-      name  = "vpcId"
-      value = var.vpc_id
-    },
-    {
-      name  = "serviceAccount.create"
-      value = "false"
-    },
-    {
-      name  = "serviceAccount.name"
-      value = "aws-load-balancer-controller"
-    }
-  ]
+  set {
+    name  = "clusterName"
+    value = var.cluster_name
+  }
+
+  set {
+    name  = "region"
+    value = var.region
+  }
+
+  set {
+    name  = "vpcId"
+    value = var.vpc_id
+  }
+
+  set {
+    name  = "serviceAccount.create"
+    value = "false"
+  }
+
+  set {
+    name  = "serviceAccount.name"
+    value = "aws-load-balancer-controller"
+  }
 }
+

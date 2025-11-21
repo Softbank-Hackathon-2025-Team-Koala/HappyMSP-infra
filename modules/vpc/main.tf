@@ -59,12 +59,15 @@ resource "aws_subnet" "private" {
 
 # NAT용 Elastip IP 생성
 resource "aws_eip" "nat" {
+  count  = length(var.private_subnet_cidrs)
   domain = "vpc"
 }
+
 # NAT Gateway 생성
 resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat.id          # 생성한 NAT용 Elastic IP에 연결
-  subnet_id     = aws_subnet.public[0].id # 첫 번째 public subnet에 배치
+  count         = length(var.private_subnet_cidrs)
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = aws_subnet.public[count.index].id
 }
 
 ########################################
@@ -92,19 +95,21 @@ resource "aws_route_table_association" "public_assoc" {
 # 프라이빗 라우트 테이블
 ########################################
 resource "aws_route_table" "private" {
+  count  = length(var.private_subnet_cidrs)
   vpc_id = aws_vpc.main.id
 }
 
 # 프라이빗 서브넷 → NAT Gateway 라우팅 (인터넷 outbound만 허용)
-resource "aws_route" "private_nat" {
-  route_table_id         = aws_route_table.private.id
-  nat_gateway_id         = aws_nat_gateway.nat.id
+resource "aws_route" "private_nat_route" {
+  count                  = length(var.private_subnet_cidrs)
+  route_table_id         = aws_route_table.private[count.index].id
   destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat[count.index % length(aws_subnet.public)].id
 }
 
 # 프라이빗 서브넷과 프라이빗 라우트 테이블 연결
 resource "aws_route_table_association" "private_assoc" {
-  count          = length(aws_subnet.private)
+  count          = length(var.private_subnet_cidrs)
   subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private[count.index].id
 }

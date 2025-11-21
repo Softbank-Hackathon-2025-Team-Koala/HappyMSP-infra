@@ -116,7 +116,7 @@ Kubernetes/Helm provider가 초기화에 실패할 수 있음.
 따라서 아래 순서로 apply:
 
 ```bash
-terraform apply -target=module.vpc -target=module.eks -target=module.ecr
+terraform apply -target=module.vpc -target=module.eks
 ```
 
 ---
