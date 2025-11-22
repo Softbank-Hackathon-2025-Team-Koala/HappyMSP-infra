@@ -5,6 +5,8 @@
 # - EKS에서 Ingress → ALB 생성/관리 자동화
 # - IRSA 기반 ServiceAccount를 사용하도록 설정
 resource "helm_release" "aws_load_balancer_controller" {
+  count = var.enabled ? 1 : 0
+
   name       = "aws-load-balancer-controller"
   namespace  = "kube-system"
   repository = "https://aws.github.io/eks-charts"

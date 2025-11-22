@@ -4,6 +4,8 @@
 # - 컨트롤러가 ALB/NLB 등을 생성·수정할 수 있는 권한을 제공
 
 resource "aws_iam_role" "lb_role" {
+  count = var.enabled ? 1 : 0
+
   name = "${var.project_name}-lb-role"
 
   assume_role_policy = data.aws_iam_policy_document.lb_assume.json
@@ -30,12 +32,16 @@ data "aws_iam_policy_document" "lb_assume" {
 
 # ALB Controller 권한 정책 로드
 resource "aws_iam_policy" "lb_policy" {
+  count = var.enabled ? 1 : 0
+
   name   = "${var.project_name}-lb-policy"
   policy = file("${path.module}/lb-controller-policy.json")
 }
 
 # IAM Role에 정책 부착
 resource "aws_iam_role_policy_attachment" "lb_attach" {
-  role       = aws_iam_role.lb_role.name
-  policy_arn = aws_iam_policy.lb_policy.arn
+  count = var.enabled ? 1 : 0
+
+  role       = aws_iam_role.lb_role[count.index].name
+  policy_arn = aws_iam_policy.lb_policy[count.index].arn
 }
