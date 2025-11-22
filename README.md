@@ -1,12 +1,32 @@
-# 🚀 Terraform EKS Infrastructure
-
+# 🚀 Terraform Infrastructure
 **AWS EKS 기반 마이크로서비스 배포 플랫폼** 인프라 구축을 위한 Terraform 구성입니다.
 
-이 레포지토리는 다음을 목표로 합니다.
+<br>
+<br>
 
-- 공통 네트워크(VPC) 인프라 자동 생성
-- EKS 클러스터 및 NodeGroup 생성
-- 클러스터에 AWS Load Balancer Controller 및 Metrics Server 설치
+# 🏗️ Architecture Overview
+![Architecture Diagram](https://github.com/Softbank-Hackathon-2025-Team-Koala/HappyMSP-infra/blob/main/architecture-diagram.jpg)
+
+본 인프라 구성은 **고가용성(High Availability)**, **확장성(Scalability)**, **보안성(Security)**을 모두 고려한 AWS EKS 기반 아키텍처입니다.
+
+### 🔹 핵심 특징
+
+- **Multi-AZ Deployment**  
+  EKS 클러스터 및 노드 그룹을 **여러 가용 영역(AZ)**에 분산 배치하여 장애 발생 시 자동 복구와 고가용성을 보장합니다.
+
+- **Auto Scaling Node Groups**  
+  워크로드 트래픽 변화에 따라 **Managed Node Group의 자동 확장(Auto Scaling)** 이 이루어져 효율적인 리소스 활용이 가능합니다.
+
+- **Private Subnet Security**  
+  EKS 노드는 **Private Subnet** 내에 배치되어 외부 직접 접근이 차단되며, **NAT Gateway**를 통해서만 외부와 통신하도록 구성되어 있습니다.
+
+- **AWS Load Balancer Controller Integration**  
+  EKS 클러스터에 **AWS Load Balancer Controller**를 설치하여,  
+  Kubernetes Ingress 리소스가 자동으로 **Application Load Balancer(ALB)** 와 연동되며,  
+  ALB 생성·라우팅·모니터링을 **EKS가 자동 관리**하도록 구현했습니다.
+
+<br>
+<br>
 
 # 📁 Repository Structure
 
@@ -15,13 +35,21 @@
 ├── main.tf
 ├── variables.tf
 ├── outputs.tf
-├── provider-eks.tf             # EKS만 먼저 생성
-├── provider-full.tf.disabled   # EKS + Kubernetes/Helm 리소스까지 포함
+├── provider-eks.tf             # EKS 생성용 Provider
+├── provider-full.tf.disabled   # EKS 생성 후 활성화하는 Provider (Helm/K8s 포함)
 └── modules
     ├── vpc/
     ├── eks/
     └── irsa-alb-controller/
 ```
+
+본 Terraform 레포지토리는 다음을 목표로 합니다.
+- 공통 네트워크(VPC) 인프라 자동 생성
+- EKS 클러스터 및 NodeGroup 생성
+- 클러스터에 AWS Load Balancer Controller 및 Metrics Server 설치
+
+<br>
+<br>
 
 # 🧩 Core Modules Overview
 
@@ -85,6 +113,7 @@ module "alb_controller" {
 <br>
 <br>
 
+
 # 🧱 Provider Files (중요)
 
 **AWS 리소스를 만드는 Provider**와
@@ -113,6 +142,10 @@ terraform apply \
 
 > ⚠️ provider-full.tf 는 EKS 클러스터 정보(cluster_endpoint, CA 등)에 의존하므로
 > 클러스터 생성이 끝난 뒤 사용하는 것이 안전합니다.
+
+
+<br>
+<br>
 
 # 🔧 Deployment Flow
 
